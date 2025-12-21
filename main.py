@@ -70,7 +70,7 @@ def delete_task(task_id: int) -> Task:
 @app.put("/tasks/{task_id}", response_model=Task)
 def change_state_of_task(task_id: int) -> Task:
     if task_id < len(tasks):
-        tasks[task_id] = not "is_done"
+        tasks[task_id]["is_done"] = not tasks[task_id]["is_done"]
         return tasks[task_id]
     else:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
