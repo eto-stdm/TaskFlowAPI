@@ -62,7 +62,8 @@ def get_task(task_id: int) -> Task:
 @app.delete("/tasks/{task_id}", response_model=list[Task])
 def delete_task(task_id: int) -> Task:
     if task_id < len(tasks):
-        return tasks.pop(task_id)
+        tasks.pop(task_id)
+        return tasks
     else:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
 
