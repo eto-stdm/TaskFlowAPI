@@ -54,7 +54,7 @@ def list_task(limit: int = 100):
 @app.get("/tasks/{task_id}", response_model=Task)
 def get_task(task_id: int) -> Task:
     if task_id < len(tasks):
-        return tasks[task_id]
+        return tasks.__getitem__(task_id) # tasks[task_id] == tasks.__getitem__(task_id) (не выдаёт предупреждение)
     else:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
 
@@ -62,15 +62,14 @@ def get_task(task_id: int) -> Task:
 @app.delete("/tasks/{task_id}", response_model=list[Task])
 def delete_task(task_id: int) -> Task:
     if task_id < len(tasks):
-        tasks.pop(task_id)
-        return tasks
+        return tasks.pop(task_id)
     else:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
 
 @app.put("/tasks/{task_id}", response_model=Task)
 def change_state_of_task(task_id: int) -> Task:
     if task_id < len(tasks):
-        tasks[task_id]["is_done"] = not tasks[task_id]["is_done"]
-        return tasks[task_id]
+        tasks.__getitem__(task_id)["is_done"] = not tasks.__getitem__(task_id)["is_done"]
+        return tasks.__getitem__(task_id)
     else:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
