@@ -1,5 +1,5 @@
 tasks = []
-test_data = [
+tasks_data = [
 {
   "text": "Создание приложения на FastAPI",
   "is_done": True
@@ -21,4 +21,4 @@ test_data = [
   "is_done": False
 }
 ]
-tasks += test_data
+tasks += tasks_data
