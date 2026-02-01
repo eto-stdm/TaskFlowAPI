@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator # импорт базовой модели pydantic, и валидатора полей
 
 class User(BaseModel):
     username: str

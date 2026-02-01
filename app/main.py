@@ -1,12 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI # импорт класса приложения
 
-from app.routers import tasks, users, projects
+from app.routers import tasks, users, projects # импорт ручек
+from fastapi_pagination import add_pagination # импорт добавления пагинации
 
-app = FastAPI()
+app = FastAPI() # создание приложения
+add_pagination(app) # добавление пагинации
 
-app.include_router(tasks.router)
-app.include_router(projects.router)
-app.include_router(users.router)
+app.include_router(tasks.router) # подключение ручек
+app.include_router(projects.router) # ↑
+app.include_router(users.router) # ↑
 
 @app.get("/")
 def root():

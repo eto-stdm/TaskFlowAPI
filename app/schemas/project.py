@@ -1,5 +1,5 @@
-from pydantic import BaseModel, field_validator
-# from app.schemas.user import User
+from pydantic import BaseModel, field_validator # импорт базовой модели pydantic и валидатора полей
+# from app.schemas.user import User # импорт юзера для связи моделей (не используется)
 
 class Project(BaseModel):
     name: str

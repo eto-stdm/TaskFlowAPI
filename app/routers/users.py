@@ -1,18 +1,18 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException # импорт классов для структуризации ручек и http-исключений
 
-from app.test_data.users import users
-from app.schemas.user import User
+from app.test_data.users import users # импорт тестовых данных
+from app.schemas.user import User # импорт схемы
 
 router = APIRouter(
-    prefix="/users",
-    tags=["users"]
+    prefix="/users", # автопрефикс к ручкам
+    tags=["users"] # группировка ручек в OpenAPI
 )
 
-@router.post("/", response_model=list[User])
+@router.post("/", response_model=User)
 def create_user(user: User):
     """Создание нового пользователя"""
     users.append(user)
-    return users
+    return user
 
 
 @router.get("/", response_model=list[User])
