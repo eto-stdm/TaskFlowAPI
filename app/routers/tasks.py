@@ -8,6 +8,9 @@ from pydantic_filters.plugins.fastapi import FilterDepends # импорт фун
 from app.test_data.tasks import tasks # импорт тестовых данных
 from app.schemas.task import Task, TaskFilter # импорт схемы
 
+import sqlalchemy as sa
+from pydantic_filters.drivers.sqlalchemy import append_filter_to_statement
+
 router = APIRouter( # экземпляр роутера
     prefix="/tasks", # автопрефикс к ручкам
     tags=["tasks"] # группировка ручек в OpenAPI
@@ -32,9 +35,18 @@ def create_task(task: Task):
 
 
 @router.get("/", response_model=CustomPage[Task]) # CustomPage для пагинации
-def list_task(filter_: Annotated[TaskFilter, FilterDepends(TaskFilter)],): # фильтрация не работает
+def list_task(text_: str = None, is_done_: bool = None): # фильтрация не работает filter_: Annotated[TaskFilter, FilterDepends(TaskFilter)]
     """Вывод первых двадцати (по умолчанию) задач"""
+    #if text_:
+    #    paginate(tasks) if tasks["text"].toLower() == text_.lower() else None
+    #if is_done_:
+    #    paginate(tasks) if tasks["is_done"] == is_done_ else None
+    #statement = select(Task)
+    #tasks = append_filter_to_statement(filter_=filter_, model=Task, statement=)
+    #return filter_
+    #return paginate(filter_)
     return paginate(tasks) # возврат пагинированного списка (n-ое количество записей на странице)
+
 
 
 @router.get("/{task_id}", response_model=Task)
