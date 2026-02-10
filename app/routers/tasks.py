@@ -1,15 +1,11 @@
-from typing import TypeVar, Annotated # импорт класса для создания обобщённого типа и аннотирования типов
+from typing import TypeVar # импорт класса для создания обобщённого типа
 
 from fastapi import APIRouter, HTTPException, Query # импорт классов для структуризации ручек, создания http-исключений и запросов
 from fastapi_pagination import Page, paginate # импорт класса "страница" и функции пагинации
 from fastapi_pagination.customization import CustomizedPage, UseParamsFields # импорт кастомизации параметров для ↑
-from pydantic_filters.plugins.fastapi import FilterDepends # импорт функции для фильтрации по запросам
 
 from app.test_data.tasks import tasks # импорт тестовых данных
-from app.schemas.task import Task, TaskFilter # импорт схемы
-
-import sqlalchemy as sa
-from pydantic_filters.drivers.sqlalchemy import append_filter_to_statement
+from app.schemas.task import Task # импорт схемы
 
 router = APIRouter( # экземпляр роутера
     prefix="/tasks", # автопрефикс к ручкам
@@ -35,18 +31,29 @@ def create_task(task: Task):
 
 
 @router.get("/", response_model=CustomPage[Task]) # CustomPage для пагинации
-def list_task(text_: str = None, is_done_: bool = None): # фильтрация не работает filter_: Annotated[TaskFilter, FilterDepends(TaskFilter)]
+def list_task(text_: str = None, is_done_: bool = None): # атрибуты для фильтрации
     """Вывод первых двадцати (по умолчанию) задач"""
-    #if text_:
-    #    paginate(tasks) if tasks["text"].toLower() == text_.lower() else None
-    #if is_done_:
-    #    paginate(tasks) if tasks["is_done"] == is_done_ else None
-    #statement = select(Task)
-    #tasks = append_filter_to_statement(filter_=filter_, model=Task, statement=)
-    #return filter_
-    #return paginate(filter_)
-    return paginate(tasks) # возврат пагинированного списка (n-ое количество записей на странице)
+    filtered = list() # для отфильтрованных объектов
 
+    if text_ and is_done_ != None: # оба фильтра
+        for t in tasks:
+            if text_.lower() in t["text"].lower() and is_done_ is t["is_done"]:
+                filtered.append(t)
+        return paginate(filtered)
+
+    if text_:
+        for t in tasks:
+            if text_.lower() in t["text"].lower():
+                filtered.append(t)
+        return paginate(filtered)
+
+    if is_done_ != None:
+        for t in tasks:
+            if is_done_ is t["is_done"]:
+                filtered.append(t)
+        return paginate(filtered)
+
+    return paginate(tasks) # без фильтров
 
 
 @router.get("/{task_id}", response_model=Task)
@@ -54,7 +61,6 @@ def get_task(task_id: int) -> Task:
     """Вывод определённой задачи по индексу"""
     if task_id < len(tasks):
         return tasks.__getitem__(task_id)
-        # return tasks[task_id] # выдаёт предупреждение
     else:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
 
