@@ -10,6 +10,11 @@ app.include_router(tasks.router) # подключение ручек
 app.include_router(projects.router) # ↑
 app.include_router(users.router) # ↑
 
+from app.core.db import run
+import asyncio
+
+asyncio.run(run())
+
 @app.get("/")
 def root():
     """Корневая директория"""
